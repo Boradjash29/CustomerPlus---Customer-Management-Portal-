@@ -1,0 +1,354 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+    /* Container and Layout */
+    .order-form-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 2rem 0;
+    }
+
+    /* Card Styling */
+    .order-card {
+        border-radius: 20px;
+        border: 1px solid #3a3a5c;
+        background: rgba(42, 42, 70, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Header Styling */
+    .order-card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .order-card-header:hover::before {
+        left: 100%;
+    }
+
+    .order-card-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    /* Form Body */
+    .order-card-body {
+        padding: 2rem;
+        background: rgba(30, 30, 50, 0.8);
+    }
+
+    /* Form Field Styling */
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #e8e9f3;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Input Styling */
+    .form-control {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px solid #4a4a6a !important;
+        color: #ffffff !important;
+        border-radius: 12px !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+        position: relative;
+    }
+
+    .form-control::placeholder {
+        color: #a0a0b0 !important;
+    }
+
+    .form-control:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        outline: none !important;
+        transform: translateY(-1px);
+    }
+
+    .form-control:hover {
+        border-color: #5a5a7a !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Select Styling */
+    select.form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+        background-position: right 12px center !important;
+        background-repeat: no-repeat !important;
+        background-size: 16px 12px !important;
+        padding-right: 40px !important;
+    }
+
+    /* Select Options Styling */
+    select.form-control option {
+        background-color: #2a2a46 !important;
+        color: #ffffff !important;
+        padding: 8px 12px !important;
+        border: none !important;
+    }
+
+    select.form-control option:hover {
+        background-color: #667eea !important;
+        color: #ffffff !important;
+    }
+
+    select.form-control option:checked {
+        background-color: #667eea !important;
+        color: #ffffff !important;
+    }
+
+    /* For better cross-browser support */
+    select.form-control optgroup {
+        background-color: #2a2a46 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
+
+    /* Textarea Styling */
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* Help Text */
+    .form-text {
+        color: #a0a0b0 !important;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    /* Error Messages */
+    .text-danger {
+        color: #ff6b6b !important;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: block;
+        font-weight: 500;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 14px 32px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        background: linear-gradient(135deg, #7c8ff0 0%, #8659b8 100%);
+    }
+
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Button Container */
+    .btn-container {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .order-form-container {
+            padding: 1rem;
+        }
+        
+        .order-card-body {
+            padding: 1.5rem;
+        }
+        
+        .order-card-title {
+            font-size: 1.5rem;
+        }
+        
+        .form-control {
+            padding: 10px 14px !important;
+        }
+        
+        .submit-btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+    }
+
+    /* Animation for form fields */
+    .form-group {
+        animation: slideInUp 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes slideInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Loading state for button */
+    .submit-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+</style>
+
+<div class="order-form-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h4 class="order-card-title">
+                            <span>📝</span>
+                            Place a New Order
+                        </h4>
+                    </div>
+                    <div class="order-card-body">
+                        <form method="POST" id="orderForm">
+                            {% csrf_token %}
+                            
+                            {% for field in form %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        {{ field.label }}
+                                        {% if field.field.required %}
+                                            <span style="color: #ff6b6b;">*</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ field|add_class:"form-control" }}
+                                    {% if field.help_text %}
+                                        <small class="form-text">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            
+                            <div class="btn-container">
+                                <button class="submit-btn" type="submit" id="submitBtn">
+                                    Submit Order
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('orderForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Add loading state to submit button
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Processing...';
+    });
+    
+    // Add real-time validation feedback
+    const inputs = form.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() !== '') {
+                this.style.borderColor = '#28a745';
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

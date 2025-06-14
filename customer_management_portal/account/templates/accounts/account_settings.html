@@ -1,0 +1,195 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block title %}Account Settings{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0d0f1a; /* Dark background */
+        color: #e0e0e0; /* Light text color */
+        margin: 0;
+        padding: 0;
+    }
+
+    .account-container {
+        padding: 80px 30px; /* Spacious padding */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+    }
+
+    .account-wrapper {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 50px; /* Space between columns */
+        max-width: 1300px;
+        width: 100%;
+    }
+
+    .profile-sidebar {
+        background: rgba(30, 33, 61, 0.8); /* Sidebar background */
+        border-radius: 20px;
+        padding: 40px; /* Padding */
+        border: 1px solid rgba(103, 123, 255, 0.3); /* Border */
+        backdrop-filter: blur(30px);
+        box-shadow: 0 0 20px rgba(103, 123, 255, 0.2); /* Shadow */
+    }
+
+    .back-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px; /* Padding */
+        background: #1e214f;
+        color: #e0e0e0; /* Light text color */
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(103, 123, 255, 0.3); /* Border */
+    }
+
+    .back-link:hover {
+        background: #2a2d6f;
+        transform: translateY(-3px); /* Hover effect */
+    }
+
+    .profile-image {
+        width: 100%;
+        max-width: 240px;
+        height: 240px;
+        object-fit: cover;
+        border-radius: 16px;
+        margin-top: 20px;
+    }
+
+    .settings-main {
+        background: rgba(30, 33, 61, 0.8); /* Main settings background */
+        border-radius: 20px;
+        padding: 50px; /* Padding */
+        border: 1px solid rgba(103, 123, 255, 0.3); /* Border */
+        box-shadow: 0 0 20px rgba(103, 123, 255, 0.2); /* Shadow */
+        backdrop-filter: blur(30px);
+    }
+
+    .settings-title {
+        font-size: 32px; /* Title font size */
+        font-weight: 700;
+        margin-bottom: 15px; /* Margin */
+    }
+
+    .settings-subtitle {
+        font-size: 16px; /* Subtitle font size */
+        color: #b0b0b0; /* Subtitle color */
+        margin-bottom: 30px;
+    }
+
+    .settings-form {
+        display: grid;
+        gap: 30px; /* Gap between form elements */
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 10px; /* Margin */
+        font-weight: 600; /* Label weight */
+        font-size: 15px; /* Label font size */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="file"],
+    select,
+    textarea {
+        padding: 18px; /* Padding */
+        border: 1px solid rgba(103, 123, 255, 0.3); /* Border */
+        border-radius: 12px;
+        background-color: rgba(1, 5, 25, 0.5); /* Input background */
+        color: #e0e0e0; /* Input text color */
+        font-size: 15px; /* Input font size */
+        outline: none;
+        transition: border 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #677bff; /* Focus border color */
+        box-shadow: 0 0 0 2px rgba(103, 123, 255, 0.3); /* Focus shadow */
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #677bff, #4a63ff); /* Button gradient */
+        padding: 18px 34px; /* Button padding */
+        border: none;
+        border-radius: 12px;
+        font-size: 18px; /* Button font size */
+        font-weight: 700;
+        color: white; /* Button text color */
+        cursor: pointer;
+        box-shadow: 0 0 12px #677bff66; /* Button shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Button transition */
+    }
+
+    .submit-button:hover {
+        transform: translateY(-3px); /* Hover effect */
+        box-shadow: 0 0 24px #677bff88; /* Hover shadow */
+    }
+
+    @media (max-width: 1024px) {
+        .account-wrapper {
+            grid-template-columns: 1fr; /* Single column on small screens */
+        }
+
+        .profile-image {
+            height: 180px; /* Smaller profile image */
+        }
+    }
+</style>
+
+<div class="account-container">
+    <div class="account-wrapper">
+        <aside class="profile-sidebar">
+            <a class="back-link" href="{% url 'home' %}">
+                <i class="fas fa-arrow-left"></i>&nbsp;Back to Profile
+            </a>
+            {% if request.user.customer.profile_pic %}
+                <img class="profile-image" src="{{ request.user.customer.profile_pic.url }}" alt="Profile Picture">
+            {% endif %}
+        </aside>
+
+        <main class="settings-main">
+            <h2 class="settings-title">Account Settings</h2>
+            <p class="settings-subtitle">Update your personal information below.</p>
+
+            <form class="settings-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="form-error">{{ field.errors|first }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="submit-button" type="submit">
+                    <i class="fas fa-save"></i> Update
+                </button>
+            </form>
+        </main>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <!-- Brand/Logo Section -->
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'images/customerpluslogo.png' %}" alt="CustomerPlus" 
+           style="height: 40px; width: auto; margin-right: 12px;">
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Content -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Main Navigation Links -->
+      <ul class="navbar-nav me-auto">
+        {%if request.user.is_staff %}
+        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'product' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'product' %}">Products</a>
+        </li>
+        {%else%}
+        <li class="nav-item">
+        <a class="nav-link text-success fw-bold" href="{% url 'place_order' %}">Place Order</a>
+        </li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'account' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'account'%}">Settings</a>
+        </li>
+        {% endif %}
+      </ul>
+
+      <!-- User Info and Actions -->
+      <div class="d-flex align-items-center">
+        <span class="text-white me-3 d-none d-lg-inline">
+          Hello, <strong>{{ request.user }}</strong>
+        </span>
+        <a class="btn btn-outline-info btn-sm" href="{% url 'logout' %}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,103 @@
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #020617;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #e2e8f0;
+  }
+
+  .form-wrapper {
+    max-width: 600px;
+    margin: 60px auto;
+    background-color: #0f172a;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #1e293b;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+  }
+
+  .form-wrapper h2 {
+    text-align: center;
+    color: #e2e8f0;
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+
+  .form-wrapper label {
+    font-weight: 500;
+    margin-top: 15px;
+    color: #cbd5e1;
+  }
+
+  .form-wrapper input,
+  .form-wrapper select,
+  .form-wrapper textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 6px;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    background-color: #020617;
+    color: #e2e8f0;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+
+  .form-wrapper input:focus,
+  .form-wrapper select:focus,
+  .form-wrapper textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    background-color: #0f172a;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+  }
+
+  .form-wrapper .btn {
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.3s ease-in-out;
+  }
+
+  .form-wrapper .btn-success {
+    background-color: #6366f1;
+    border: none;
+    color: #fff;
+  }
+
+  .form-wrapper .btn-success:hover {
+    background-color: #4f46e5;
+  }
+
+  .form-wrapper .btn-secondary {
+    background-color: #1e293b;
+    border: none;
+    color: #cbd5e1;
+  }
+
+  .form-wrapper .btn-secondary:hover {
+    background-color: #334155;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+</style>
+
+<div class="container">
+  <div class="form-wrapper">
+    <h2>Add Product</h2>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="button-group">
+        <button type="submit" class="btn btn-success">Add Product</button>
+        <a href="{% url 'product' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
